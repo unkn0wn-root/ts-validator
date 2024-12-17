@@ -1,6 +1,6 @@
 {
 	"name": "@unkn0wn-root/ts-validator",
-	"version": "0.2.0",
+	"version": "0.2.2",
 	"description": "A TypeScript runtime validation library",
 	"main": "dist/index.js",
 	"module": "dist/index.mjs",

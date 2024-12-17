@@ -371,8 +371,12 @@ export const validator = {
 	array: <T>(schema: VType<T>) => new VArray(schema),
 	literal: <L extends string | number | boolean>(val: L) => new VLiteral(val),
 	union: <U extends [VType<any>, ...VType<any>[]]>(schemas: U) => new VUnion<any>(schemas),
-    enum: <E extends { [k: string]: string | number }>(e: E) =>
-		new VEnum(Object.values(e) as (string | number)[]),
+    enum: <T extends string | number, E extends { [k: string]: T }>(e: E) => {
+        // E[keyof E] is the union of all values in E
+        type EnumType = E[keyof E];
+        return new VEnum<EnumType>(Object.values(e) as EnumType[]);
+    },
+
 	object: <S extends VShape>(shape: S) => new VObject(shape),
 
 	// Extract the inferred type from a schema

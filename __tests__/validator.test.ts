@@ -168,26 +168,49 @@ describe('Validator', () => {
 			}
 		});
 	});
-	describe('enum()', () => {
-		enum Status {
-			Active = 'active',
-			Inactive = 'inactive',
-			Pending = 'pending',
-		}
 
-		const schema = validator.enum(Status);
+    describe('enum()', () => {
+        enum Status {
+            Active = 'active',
+            Inactive = 'inactive',
+            Pending = 'pending',
+        }
 
-		it('should accept valid enum values', () => {
-			expect(schema.parse('active')).toBe('active');
-			expect(schema.parse('inactive')).toBe('inactive');
-			expect(schema.parse('pending')).toBe('pending');
-		});
+        const schema = validator.enum(Status);
 
-		it('should reject invalid values', () => {
-			expect(() => schema.parse('unknown')).toThrow(validator.ValidationError);
-			expect(() => schema.parse(123)).toThrow(validator.ValidationError);
-			expect(() => schema.parse(null)).toThrow(validator.ValidationError);
-		});
+        it('should accept valid enum values', () => {
+            expect(schema.parse('active')).toBe('active');
+            expect(schema.parse('inactive')).toBe('inactive');
+            expect(schema.parse('pending')).toBe('pending');
+        });
+
+        it('should reject invalid values', () => {
+            expect(() => schema.parse('unknown')).toThrow(validator.ValidationError);
+            expect(() => schema.parse(123)).toThrow(validator.ValidationError);
+            expect(() => schema.parse(null)).toThrow(validator.ValidationError);
+        });
+
+        it('should accept null when made nullable', () => {
+            const nullableSchema = schema.nullable();
+            expect(nullableSchema.parse('active')).toBe('active');
+            expect(nullableSchema.parse(null)).toBeNull();
+            expect(() => nullableSchema.parse('unknown')).toThrow(validator.ValidationError);
+        });
+
+        it('should accept undefined when made optional', () => {
+            const optionalSchema = schema.optional();
+            expect(optionalSchema.parse('inactive')).toBe('inactive');
+            expect(optionalSchema.parse(undefined)).toBeUndefined();
+            expect(() => optionalSchema.parse('unknown')).toThrow(validator.ValidationError);
+        });
+
+        it('should accept null and undefined when optional and nullable', () => {
+            const optNullSchema = schema.optional().nullable();
+            expect(optNullSchema.parse('pending')).toBe('pending');
+            expect(optNullSchema.parse(null)).toBeNull();
+            expect(optNullSchema.parse(undefined)).toBeUndefined();
+            expect(() => optNullSchema.parse('unknown')).toThrow(validator.ValidationError);
+        });
 
         enum User {
             Active,
@@ -201,11 +224,18 @@ describe('Validator', () => {
             expect(userSchema.parse(1)).toBe(1);
         });
 
+        it('should reject invalid User values', () => {
+            expect(() => userSchema.parse(2)).toThrow(validator.ValidationError);
+            expect(() => userSchema.parse(123)).toThrow(validator.ValidationError);
+            expect(() => userSchema.parse(null)).toThrow(validator.ValidationError);
+        });
 
-		it('should reject invalid User values', () => {
-			expect(() => schema.parse(2)).toThrow(validator.ValidationError);
-			expect(() => schema.parse(123)).toThrow(validator.ValidationError);
-			expect(() => schema.parse(null)).toThrow(validator.ValidationError);
-		});
-	});
+        it('should handle User enum with optional and nullable', () => {
+            const optNullUserSchema = userSchema.optional().nullable();
+            expect(optNullUserSchema.parse(0)).toBe(0);
+            expect(optNullUserSchema.parse(null)).toBeNull();
+            expect(optNullUserSchema.parse(undefined)).toBeUndefined();
+            expect(() => optNullUserSchema.parse(2)).toThrow(validator.ValidationError);
+        });
+    });
 });
