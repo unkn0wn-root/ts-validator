@@ -168,4 +168,44 @@ describe('Validator', () => {
 			}
 		});
 	});
+	describe('enum()', () => {
+		enum Status {
+			Active = 'active',
+			Inactive = 'inactive',
+			Pending = 'pending',
+		}
+
+		const schema = validator.enum(Status);
+
+		it('should accept valid enum values', () => {
+			expect(schema.parse('active')).toBe('active');
+			expect(schema.parse('inactive')).toBe('inactive');
+			expect(schema.parse('pending')).toBe('pending');
+		});
+
+		it('should reject invalid values', () => {
+			expect(() => schema.parse('unknown')).toThrow(validator.ValidationError);
+			expect(() => schema.parse(123)).toThrow(validator.ValidationError);
+			expect(() => schema.parse(null)).toThrow(validator.ValidationError);
+		});
+
+        enum User {
+            Active,
+            Removed
+        }
+
+        const userSchema = validator.enum(User);
+
+        it('should accept valid User enum values', () => {
+            expect(userSchema.parse(0)).toBe(0);
+            expect(userSchema.parse(1)).toBe(1);
+        });
+
+
+		it('should reject invalid User values', () => {
+			expect(() => schema.parse(2)).toThrow(validator.ValidationError);
+			expect(() => schema.parse(123)).toThrow(validator.ValidationError);
+			expect(() => schema.parse(null)).toThrow(validator.ValidationError);
+		});
+	});
 });

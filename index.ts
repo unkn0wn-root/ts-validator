@@ -302,6 +302,33 @@ class VUnion<T> extends VType<T> {
 	}
 }
 
+/**
+ * Schema type for enums.
+ * Validates that the value is one of the allowed enum values.
+ * @example
+ * ```ts
+ * enum Status {
+ *   Active = "active",
+ *   Inactive = "inactive",
+ *   Pending = "pending"
+ * }
+ *
+ * const statusSchema = validator.enum(Status);
+ * ```
+ */
+class VEnum<T extends string | number> extends VType<T> {
+	constructor(private allowedValues: T[]) {
+		super();
+	}
+
+	protected _parse(path: (string | number)[], data: unknown): T {
+		if (!this.allowedValues.includes(data as T)) {
+			throw makeError(path, `one of ${JSON.stringify(this.allowedValues)}`, typeof data, data);
+		}
+		return data as T;
+	}
+}
+
 type VShape = { [key: string]: VType<any> };
 
 /**
@@ -344,6 +371,8 @@ export const validator = {
 	array: <T>(schema: VType<T>) => new VArray(schema),
 	literal: <L extends string | number | boolean>(val: L) => new VLiteral(val),
 	union: <U extends [VType<any>, ...VType<any>[]]>(schemas: U) => new VUnion<any>(schemas),
+    enum: <E extends { [k: string]: string | number }>(e: E) =>
+		new VEnum(Object.values(e) as (string | number)[]),
 	object: <S extends VShape>(shape: S) => new VObject(shape),
 
 	// Extract the inferred type from a schema
