@@ -24,11 +24,18 @@ yarn add @unkn0wn-root/ts-validator
 ```typescript
 import { validator } from '@unkn0wn-root/ts-validator';
 
+enum Status {
+  Active = 'active',
+  Inactive = 'inactive',
+  Pending = 'pending'
+}
+
 // Define your schema
 const userSchema = validator.object({
   id: validator.number(),
   name: validator.string(),
   email: validator.string().optional(),
+  status: validator.enum(Status),
   metadata: validator.object({
     lastLogin: validator.date().nullable(),
     preferences: validator.object({
@@ -46,6 +53,7 @@ try {
     id: 123,
     name: "John",
     email: "john@example.com",
+    status: "active", // Must be one of "active", "inactive", or "pending"
     metadata: {
       lastLogin: new Date(),
       preferences: {
@@ -84,6 +92,7 @@ if (result.success) {
 - `validator.object(shape)`
 - `validator.literal(value)`
 - `validator.union(schemas)`
+- `validator.enum(EnumType)`
 
 ### Modifiers
 
