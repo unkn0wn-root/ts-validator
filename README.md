@@ -33,6 +33,7 @@ enum Status {
 // Define your schema
 const userSchema = validator.object({
   id: validator.number(),
+  username: validator.string().refine((s) => s.length >= 3, 'Username must be at least 3 characters'), // add custom validation
   name: validator.string(),
   email: validator.string().optional(),
   status: validator.enum(Status),
@@ -51,6 +52,7 @@ type User = typeof userSchema._type;
 try {
   const user = userSchema.parse({
     id: 123,
+    username: "jobo"
     name: "John",
     email: "john@example.com",
     status: "active", // Must be one of "active", "inactive", or "pending"
