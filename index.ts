@@ -161,10 +161,8 @@ class VNullable<T> extends VType<T | null> {
 /**
  * Schema type for string validation.
  * @example
- * ```ts
  * const nameSchema = validator.string();
  * // Optional: nameSchema.refine(s => s.length > 0, "String cannot be empty");
- * ```
  */
 class VString extends VType<string> {
 	protected _parse(path: (string | number)[], data: unknown): string {
@@ -179,10 +177,8 @@ class VString extends VType<string> {
  * Schema type for number validation.
  * Rejects NaN values.
  * @example
- * ```ts
  * const ageSchema = validator.number();
  * // Optional: ageSchema.refine(n => n >= 0, "Age must be non-negative");
- * ```
  */
 class VNumber extends VType<number> {
 	protected _parse(path: (string | number)[], data: unknown): number {
@@ -196,9 +192,7 @@ class VNumber extends VType<number> {
 /**
  * Schema type for boolean validation.
  * @example
- * ```ts
  * const isActiveSchema = validator.boolean();
- * ```
  */
 class VBoolean extends VType<boolean> {
 	protected _parse(path: (string | number)[], data: unknown): boolean {
@@ -213,9 +207,7 @@ class VBoolean extends VType<boolean> {
  * Schema type for Date validation.
  * Rejects invalid dates (where getTime() returns NaN).
  * @example
- * ```ts
  * const birthDateSchema = validator.date();
- * ```
  */
 class VDate extends VType<Date> {
 	protected _parse(path: (string | number)[], data: unknown): Date {
@@ -230,9 +222,7 @@ class VDate extends VType<Date> {
  * Schema type for array validation.
  * Validates each element against the provided element schema.
  * @example
- * ```ts
  * const numbersSchema = validator.array(validator.number());
- * ```
  */
 class VArray<T> extends VType<T[]> {
 	constructor(private element: VType<T>) {
@@ -251,9 +241,7 @@ class VArray<T> extends VType<T[]> {
  * Schema type for literal value validation.
  * Ensures a value exactly matches the provided literal.
  * @example
- * ```ts
  * const statusSchema = validator.literal("active");
- * ```
  */
 class VLiteral<T extends string | number | boolean> extends VType<T> {
 	constructor(private val: T) {
@@ -272,12 +260,10 @@ class VLiteral<T extends string | number | boolean> extends VType<T> {
  * Schema type for union validation.
  * Tries each provided schema until one succeeds.
  * @example
- * ```ts
  * const stringOrNumber = validator.union([
  *   validator.string(),
  *   validator.number()
  * ]);
- * ```
  */
 class VUnion<T> extends VType<T> {
 	constructor(private options: VType<any>[]) {
@@ -306,15 +292,12 @@ class VUnion<T> extends VType<T> {
  * Schema type for enums.
  * Validates that the value is one of the allowed enum values.
  * @example
- * ```ts
  * enum Status {
  *   Active = "active",
  *   Inactive = "inactive",
  *   Pending = "pending"
  * }
- *
  * const statusSchema = validator.enum(Status);
- * ```
  */
 class VEnum<T extends string | number> extends VType<T> {
 	constructor(private allowedValues: T[]) {
@@ -376,7 +359,6 @@ export const validator = {
         type EnumType = E[keyof E];
         return new VEnum<EnumType>(Object.values(e) as EnumType[]);
     },
-
 	object: <S extends VShape>(shape: S) => new VObject(shape),
 
 	// Extract the inferred type from a schema
