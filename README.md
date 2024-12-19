@@ -55,7 +55,7 @@ try {
     username: "jobo"
     name: "John",
     email: "john@example.com",
-    status: "active", // Must be one of "active", "inactive", or "pending"
+    status: Status.Active, // Must be one of "active", "inactive", or "pending"
     metadata: {
       lastLogin: new Date(),
       preferences: {
